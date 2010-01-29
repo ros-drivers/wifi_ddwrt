@@ -1,0 +1,10 @@
+<stack name="wifi_drivers" version="0.1">
+  <description brief="WiFi drivers">
+   This stack contains WiFi drivers
+  </description>
+  <author>Jeremy Leibs</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://pr.willowgarage.com/wiki/wifi_drivers</url>
+
+</stack>

@@ -1,0 +1,19 @@
+<package>
+  <description brief="dd-wrt wifi ap">
+     Access to the DD-WRT wifi
+  </description>
+  <author>Scott Hassan/hassan@willowgarage.com, Eitan Marder-Eppstein/eitan@willowgarage.com</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://pr.willowgarage.com/wiki/wifi_ddwrt</url>
+  <depend package="rospy" />
+  <depend package="std_msgs" />  
+  <depend package="pr2_msgs" />
+  <depend package="rostest" />  
+  <depend package="tf" />  
+  <depend package="geometry_msgs" />  
+  <depend package="nav_msgs" />  
+  <depend package="visualization_msgs" />  
+
+  <rosdep name="python-mechanize"/>
+</package>

@@ -1,0 +1,212 @@
+#! /usr/bin/python
+#***********************************************************
+#* Software License Agreement (BSD License)
+#*
+#*  Copyright (c) 2009, Willow Garage, Inc.
+#*  All rights reserved.
+#*
+#*  Redistribution and use in source and binary forms, with or without
+#*  modification, are permitted provided that the following conditions
+#*  are met:
+#*
+#*   * Redistributions of source code must retain the above copyright
+#*     notice, this list of conditions and the following disclaimer.
+#*   * Redistributions in binary form must reproduce the above
+#*     copyright notice, this list of conditions and the following
+#*     disclaimer in the documentation and/or other materials provided
+#*     with the distribution.
+#*   * Neither the name of Willow Garage, Inc. nor the names of its
+#*     contributors may be used to endorse or promote products derived
+#*     from this software without specific prior written permission.
+#*
+#*  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#*  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#*  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+#*  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+#*  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+#*  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+#*  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+#*  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+#*  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+#*  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+#*  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#*  POSSIBILITY OF SUCH DAMAGE.
+#* 
+#* Author: Eitan Marder-Eppstein
+#***********************************************************
+MIN_RSSI = 10
+MAX_RSSI = 100
+PKG = 'wifi_ddwrt'
+import roslib; roslib.load_manifest(PKG)
+
+import rospy
+from wifi_ddwrt.msg import *
+from pr2_msgs import AccessPoint
+
+import math
+import tf
+from geometry_msgs.msg import *
+from nav_msgs.srv import *
+from visualization_msgs.msg import *
+
+import Image
+import ImageDraw
+
+aps = {"00:18:F8:F9:6B:F0" : ("ap1", (255, 0, 0), 1), #red
+       "00:18:F8:D7:F9:FE" : ("ap2", (0, 255, 0), 6), #green
+       "00:18:F8:F9:6C:89" : ("ap3", (0, 0, 255), 1), #blue
+       "00:18:F8:F9:6B:DE" : ("ap4", (255, 255, 0), 11), #yellow
+       "00:18:F8:F9:6C:4D" : ("ap5", (255, 0, 255), 6), #hot pink
+       "00:18:F8:F9:6B:BD" : ("ap6", (0, 255, 255), 11), #aqua blue
+       "00:18:F8:F9:6C:1D" : ("ap7", (121, 71, 0), 1), #brown
+       "00:18:F8:F9:6C:41" : ("ap8", (255, 150, 0), 11), #orange
+       "00:18:F8:F9:6A:8B" : ("ap9", (19, 90, 29), 11), #forest green
+       "00:18:F8:F9:6C:38" : ("ap10", (122, 19, 176), 1),#purple
+       "00:18:F8:F9:6C:44" : ("ap11", (246, 179, 197), 6),#light pink or salmon
+       "00:21:29:7E:2B:0A" : ("ap12", (5, 29, 139), 11)}#navy blue
+
+def world_to_map(wx, wy, resolution):
+  mx = int(wx / resolution)
+  my = int(wy / resolution)
+  return (mx, my) 
+
+class WifiAnalysis:
+  def __init__(self, listener):
+    self.aps = aps
+    self.listener = listener
+    self.positions = []
+    self.get_map()
+    rospy.Subscriber('ddwrt/sitesurvey', SiteSurvey, self.survey_cb)
+    rospy.Subscriber('ddwrt/accesspoint', AccessPoint, self.ap_cb)
+    self.vis_pub = rospy.Publisher('visualization_marker', Marker)
+    self.marker_count = 0
+
+  def get_map(self):
+    rospy.wait_for_service('static_map')
+
+    try:
+      map_service = rospy.ServiceProxy('static_map', GetMap)
+      print "Requesting the static map"
+      resp = map_service()
+
+      size = (resp.map.info.width, resp.map.info.height)
+
+      self.map_res = resp.map.info.resolution
+
+      # Convert map to greyscale image
+      self.im = Image.frombuffer('L', size, resp.map.data, "raw", 'L', 0, 1)
+      remap = {0:255, 100: 0, 255:128}
+      self.im = self.im.point(lambda x: remap.get(x, 0))
+
+      # Resize image and convert to RGB
+      #self.im = self.im.resize((size[0]/2, size[1]/2), Image.BICUBIC)
+      self.im = self.im.convert("RGB")
+
+    except rospy.ServiceException, e:
+      print "The service call to get the map failed"
+
+
+  def save_map(self):
+    last_ap = None
+    for pos in self.positions:
+      map_coords = world_to_map(pos[1][0], pos[1][1], self.map_res)
+      signal_quality = (MAX_RSSI - -1.0 * pos[2]) / (MAX_RSSI - MIN_RSSI)
+      cell_radius = int(signal_quality * 0.1 / self.map_res)
+
+      draw = ImageDraw.Draw(self.im)
+      top_left = (map_coords[0] - cell_radius, map_coords[1] - cell_radius)
+      bottom_right = (map_coords[0] + cell_radius, map_coords[1] + cell_radius)
+      
+      draw.rectangle((top_left, bottom_right), fill=self.aps[pos[0]][1])
+      if last_ap != pos[0]:
+        size = 0.5 / self.map_res
+        draw.ellipse(((map_coords[0] - size, map_coords[1] - size), 
+            (map_coords[0] + size, map_coords[1] + size)), fill=self.aps[pos[0]][1])
+        if last_ap != None:
+          msg = "%s:%d-%s:%d" % (aps[last_ap][0], aps[last_ap][2], aps[pos[0]][0], aps[pos[0]][2])
+        else:
+          msg = "%s:%d " % (aps[pos[0]][0], aps[pos[0]][2])
+        width, height = draw.textsize(msg)
+        draw.text((map_coords[0]-(width)/2, map_coords[1]-(height)/2), msg, fill="black")
+        last_ap = pos[0]
+   
+    
+    self.im.save("static_map.png", "PNG")
+
+
+  def ap_cb(self, ap):
+    #we need to get the pose of the robot at the time the survey came in
+    self.listener.waitForTransform('/map', '/base_link', ap.header.stamp, rospy.Duration(2.0))
+    try:
+      (trans, rot) = self.listener.lookupTransform('/map', '/base_link', ap.header.stamp)
+    except (tf.LookupException, tf.ConnectivityException):
+      print "Got an exception that should never happen"
+      return
+
+    if not self.aps.has_key(str(ap.macattr)):
+      self.aps[str(ap.macattr)] = ("ap" + str(len(self.aps) + 1), (20, 30, 0))
+
+    self.positions.append((str(ap.macattr), trans, ap.signal))
+
+    signal_quality = (MAX_RSSI - -1.0 * ap.signal) / (MAX_RSSI - MIN_RSSI)
+    radius = 0.1
+    step_size = radius + 0.05
+
+
+    x = trans[0]
+    y = trans[1]
+    z_scale = 0.25
+
+    for i in range(int(signal_quality / .18)):
+      #we'll also publish a visualization marker
+      marker = Marker()
+      marker.header.frame_id = "/map"
+      marker.header.stamp = ap.header.stamp
+      marker.ns = "wifi_analysis"
+      marker.id = self.marker_count
+      self.marker_count += 1
+      marker.type = Marker.CUBE
+      marker.action = Marker.ADD
+      marker.pose.position.x = x
+      marker.pose.position.y = y
+      marker.pose.position.z = z_scale / 2.0
+      marker.pose.orientation.x  = rot[0]
+      marker.pose.orientation.y = rot[1]
+      marker.pose.orientation.z = rot[2]
+      marker.pose.orientation.w = rot[3]
+
+      marker.scale.x = radius 
+      marker.scale.y = radius
+      marker.scale.z = z_scale
+      marker.color.a = 1.0
+      marker.color.r = aps[str(ap.macattr)][1][0]
+      marker.color.g = aps[str(ap.macattr)][1][1]
+      marker.color.b = aps[str(ap.macattr)][1][2]
+      self.vis_pub.publish(marker)
+
+      angles = tf.transformations.euler_from_quaternion(rot)
+      x += step_size * math.cos(angles[2])
+      y += step_size * math.sin(angles[2])
+      z_scale += (i + 1) * 0.05
+
+
+    print trans
+
+  def survey_cb(self, survey):
+    #we need to get the pose of the robot at the time the survey came in
+    try:
+      (trans, rot) = self.listener.lookupTransform('/map', '/base_link', rospy.Time(0))
+    except (tf.LookupException, tf.ConnectivityException):
+      print "Got an exception that should never happen"
+      return
+
+def analysis():
+  rospy.init_node('wifi_analysis', anonymous=True)
+
+  listener = tf.TransformListener()
+  wa = WifiAnalysis(listener)
+  rospy.spin()
+  wa.save_map()
+
+if __name__ == '__main__':
+  analysis()

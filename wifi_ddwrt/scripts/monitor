@@ -1,0 +1,140 @@
+#! /usr/bin/python
+#***********************************************************
+#* Software License Agreement (BSD License)
+#*
+#*  Copyright (c) 2009, Willow Garage, Inc.
+#*  All rights reserved.
+#*
+#*  Redistribution and use in source and binary forms, with or without
+#*  modification, are permitted provided that the following conditions
+#*  are met:
+#*
+#*   * Redistributions of source code must retain the above copyright
+#*     notice, this list of conditions and the following disclaimer.
+#*   * Redistributions in binary form must reproduce the above
+#*     copyright notice, this list of conditions and the following
+#*     disclaimer in the documentation and/or other materials provided
+#*     with the distribution.
+#*   * Neither the name of Willow Garage, Inc. nor the names of its
+#*     contributors may be used to endorse or promote products derived
+#*     from this software without specific prior written permission.
+#*
+#*  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#*  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#*  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+#*  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+#*  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+#*  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+#*  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+#*  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+#*  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+#*  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+#*  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#*  POSSIBILITY OF SUCH DAMAGE.
+#* 
+#* Author: Eitan Marder-Eppstein
+#***********************************************************
+MIN_RSSI = 10
+MAX_RSSI = 100
+SIGNAL_BAR_RADIUS = 0.1
+INITIAL_BAR_HEIGHT = 0.25
+HEIGHT_INCREASE = 0.05
+NUM_BARS = 5
+MAX_PERCENT = 0.9
+DISPLAY_HEIGHT = 1.6
+
+PKG = 'wifi_ddwrt'
+import roslib; roslib.load_manifest(PKG)
+
+import rospy
+from wifi_ddwrt.msg import *
+from pr2_msgs import AccessPoint
+
+import math
+import tf
+from geometry_msgs.msg import *
+from visualization_msgs.msg import *
+
+aps = {"00:18:F8:F9:6B:F0" : ("ap1", (255, 0, 0), 1), #red
+       "00:18:F8:D7:F9:FE" : ("ap2", (0, 255, 0), 6), #green
+       "00:18:F8:F9:6C:89" : ("ap3", (0, 0, 255), 1), #blue
+       "00:18:F8:F9:6B:DE" : ("ap4", (255, 255, 0), 11), #yellow
+       "00:18:F8:F9:6C:4D" : ("ap5", (255, 0, 255), 6), #hot pink
+       "00:18:F8:F9:6B:BD" : ("ap6", (0, 255, 255), 11), #aqua blue
+       "00:18:F8:F9:6C:1D" : ("ap7", (121, 71, 0), 1), #brown
+       "00:18:F8:F9:6C:41" : ("ap8", (255, 150, 0), 11), #orange
+       "00:18:F8:F9:6A:8B" : ("ap9", (19, 90, 29), 11), #forest green
+       "00:18:F8:F9:6C:38" : ("ap10", (122, 19, 176), 1),#purple
+       "00:18:F8:F9:6C:44" : ("ap11", (246, 179, 197), 6),#light pink or salmon
+       "00:21:29:7E:2B:0A" : ("ap12", (5, 29, 139), 11)}#navy blue
+
+class WifiMonitor:
+  def __init__(self):
+    self.aps = aps
+    rospy.Subscriber('ddwrt/accesspoint', AccessPoint, self.ap_cb)
+    self.vis_pub = rospy.Publisher('visualization_marker', Marker)
+
+  def ap_cb(self, ap):
+    if not self.aps.has_key(str(ap.macattr)):
+      self.aps[str(ap.macattr)] = ("ap" + str(len(self.aps) + 1), (20, 30, 0))
+
+    signal_quality = (MAX_RSSI - -1.0 * ap.signal) / (MAX_RSSI - MIN_RSSI)
+    radius = SIGNAL_BAR_RADIUS
+    step_size = radius + 0.05
+
+
+    z_scale = INITIAL_BAR_HEIGHT
+
+    percent_step = MAX_PERCENT / NUM_BARS
+
+    #delete the old markers
+    for i in range(NUM_BARS):
+      marker = Marker()
+      marker.header.frame_id = "base_link"
+      marker.header.stamp = ap.header.stamp
+      marker.ns = "wifi_monitor"
+      marker.id = i
+      marker.action = Marker.DELETE
+      self.vis_pub.publish(marker)
+
+    x = 0.0
+    y = 0.0
+    
+    #create the new markers
+    for i in range(int(signal_quality / percent_step)):
+      #we'll also publish a visualization marker
+      marker = Marker()
+      marker.header.frame_id = "base_link"
+      marker.header.stamp = ap.header.stamp
+      marker.ns = "wifi_monitor"
+      marker.id = i
+      marker.type = Marker.CUBE
+      marker.action = Marker.ADD
+      marker.pose.position.x = x
+      marker.pose.position.y = y
+      marker.pose.position.z = DISPLAY_HEIGHT + z_scale / 2.0
+      marker.pose.orientation.x  = 0
+      marker.pose.orientation.y = 0
+      marker.pose.orientation.z = 0
+      marker.pose.orientation.w = 1
+
+      marker.scale.x = radius 
+      marker.scale.y = radius
+      marker.scale.z = z_scale
+      marker.color.a = 1.0
+      marker.color.r = aps[str(ap.macattr)][1][0]
+      marker.color.g = aps[str(ap.macattr)][1][1]
+      marker.color.b = aps[str(ap.macattr)][1][2]
+      self.vis_pub.publish(marker)
+
+      x += step_size
+      z_scale += (i + 1) * HEIGHT_INCREASE
+
+def monitor():
+  rospy.init_node('wifi_monitor', anonymous=True)
+
+  wa = WifiMonitor()
+  rospy.spin()
+
+if __name__ == '__main__':
+  monitor()
