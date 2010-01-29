@@ -19,3 +19,4 @@ set(ROSPACK_MAKEDIST true)
 rosbuild(wifi_drivers 0.1.0)
 # After next ROS release, change to new macro
 #rosbuild_make_distribution(0.1.0)
+
