@@ -2,7 +2,7 @@
   <description brief="WiFi drivers">
    This stack contains WiFi drivers
   </description>
-  <author>Jeremy Leibs</author>
+  <author>James Bowman</author>
   <license>BSD</license>  
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/wifi_drivers</url>
