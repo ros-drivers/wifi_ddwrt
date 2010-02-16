@@ -141,6 +141,7 @@ class WifiAP:
     tx_power = d.get('wl_xmit', '')
 
     active_wireless = d.get('active_wireless', None)
+    ap = None
     if active_wireless:
       active_wireless = active_wireless.replace("'", "")
       parts = active_wireless.split(",")
@@ -159,20 +160,21 @@ class WifiAP:
       
       #self.fetchBandwidthStats(interface)
 
-    #make sure that we put a stamp on things
-    header = Header()
-    header.stamp = rospy.Time.now()
+      #make sure that we put a stamp on things
+      header = Header()
+      header.stamp = rospy.Time.now()
 
-    ap = AccessPoint(header=header,
-                     essid=essid,
-                     macaddr=macaddr,
-                     signal=signal,
-                     noise=noise,
-                     snr=snr,
-                     channel=channel,
-                     rate=rate,
-                     quality=quality,
-                     tx_power=tx_power)
+      ap = AccessPoint(header=header,
+                       essid=essid,
+                       macaddr=macaddr,
+                       signal=signal,
+                       noise=noise,
+                       snr=snr,
+                       channel=channel,
+                       rate=rate,
+                       quality=quality,
+                       tx_power=tx_power)
+
     return ap
 
 
