@@ -58,7 +58,6 @@ def breakUpTrash():
             for s in item.keys_iter():
                 del item[s]
         del gc.garbage[:]
-        gc.collect()
 
 class WifiAP:
   def __init__(self, hostname, username, password):
