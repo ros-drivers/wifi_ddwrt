@@ -50,17 +50,34 @@ from mechanize import Browser
 from roslib.msg import Header
 import csv
 
+import gc
+
+def breakUpTrash():
+    for item in gc.garbage:
+        if type(item) == dict:
+            for s in item.keys_iter():
+                del item[s]
+        del gc.garbage[:]
+        gc.collect()
+
 class WifiAP:
   def __init__(self, hostname, username, password):
     self.hostname = hostname
-    self.br = Browser()
-    self.br.add_password(hostname, username, password)
-    self.br.set_handle_robots(None)
+    self.username = username
+    self.password = password
+
+  def newBrowser(self):
+    # Create new browsers all the time because its data structures grow
+    # unboundedly (texas#135)
+    br = Browser()
+    br.add_password(self.hostname, self.username, self.password)
+    br.set_handle_robots(None)
+    return br
 
   def fetchSiteSurvey(self):
     url = "http://%s/Site_Survey.asp" % self.hostname
 
-    response = self.br.open(url)
+    response = self.newBrowser().open(url)
 
     body = response.read()
     
@@ -100,7 +117,7 @@ class WifiAP:
 
   def fetchBandwidthStats(self, interface):
     url = "http://%s/fetchif.cgi?%s" % (self.hostname, interface)
-    response = self.br.open(url)
+    response = self.newBrowser().open(url)
     body = response.read()
 
     lines = body.split("\n")
@@ -114,7 +131,7 @@ class WifiAP:
 
   def fetchCurrentAP(self):
     url = "http://%s/Status_Wireless.live.asp" % self.hostname
-    response = self.br.open(url)
+    response = self.newBrowser().open(url)
     body = response.read()
 
     line = None
@@ -193,6 +210,7 @@ def loop():
   r = rospy.Rate(.5)
   lastTime = 0
   while not rospy.is_shutdown():
+    breakUpTrash() # Needed because mechanize leaves data structures that the GC sees as uncollectable (texas#135)
     if time.time() - lastTime > 60:
       survey = ap.fetchSiteSurvey()
       pub1.publish(survey)
