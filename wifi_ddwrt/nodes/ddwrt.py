@@ -210,12 +210,15 @@ def loop():
   lastTime = 0
   while not rospy.is_shutdown():
     breakUpTrash() # Needed because mechanize leaves data structures that the GC sees as uncollectable (texas#135)
-    if time.time() - lastTime > 60:
-      survey = ap.fetchSiteSurvey()
-      pub1.publish(survey)
-      lastTime = time.time()
-    node = ap.fetchCurrentAP()
-    if node: pub2.publish(node)
+    try:
+      if time.time() - lastTime > 60:
+        survey = ap.fetchSiteSurvey()
+        pub1.publish(survey)
+        lastTime = time.time()
+      node = ap.fetchCurrentAP()
+      if node: pub2.publish(node)
+    except Exception as e:
+      rospy.logwarn("Caught exception %s" % e)
     r.sleep()
         
 def test():
