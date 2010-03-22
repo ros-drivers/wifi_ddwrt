@@ -214,8 +214,11 @@ def loop():
       survey = ap.fetchSiteSurvey()
       pub1.publish(survey)
       lastTime = time.time()
-    node = ap.fetchCurrentAP()
-    if node: pub2.publish(node)
+    try:
+      node = ap.fetchCurrentAP()
+      if node: pub2.publish(node)
+    except urllib2.URLError, reason:
+      rospy.logwarn("urllib2.URLError: %s" % reason)
     r.sleep()
         
 def test():
