@@ -208,6 +208,7 @@ def loop():
 
   r = rospy.Rate(.5)
   lastTime = 0
+  last_ex = ''
   while not rospy.is_shutdown():
     breakUpTrash() # Needed because mechanize leaves data structures that the GC sees as uncollectable (texas#135)
     try:
@@ -217,8 +218,11 @@ def loop():
         lastTime = time.time()
       node = ap.fetchCurrentAP()
       if node: pub2.publish(node)
+      last_ex = ''
     except Exception as e:
-      rospy.logwarn("Caught exception %s" % e)
+      if e != last_e:
+          rospy.logwarn("Caught exception %s" % e)
+      last_ex = e
     r.sleep()
         
 def test():
