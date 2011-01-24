@@ -47,7 +47,7 @@ import rospy
 from wifi_ddwrt.msg import *
 from pr2_msgs.msg import AccessPoint
 
-from roslib.msg import Header
+from std_msgs.msg import Header
 
 wifi_data = {"header": {"seq": 24, "stamp": 1257901832.6, "frame_id": "0"}, "networks": [{"macaddr": "00:18:F8:F9:6C:41", "essid": "willow", "channel": 11, "rssi": -35, "noise": -88, "beacon": 100}, {"macaddr": "00:18:F8:F9:6B:BD", "essid": "willow", "channel": 11, "rssi": -71, "noise": -88, "beacon": 100}, {"macaddr": "00:18:F8:F9:6C:1D", "essid": "willow", "channel": 1, "rssi": -70, "noise": -92, "beacon": 100}, {"macaddr": "00:30:44:03:1F:F9", "essid": "PRLAN", "channel": 1, "rssi": -73, "noise": -92, "beacon": 100}, {"macaddr": "00:30:44:03:1F:F4", "essid": "PRGLAN", "channel": 2, "rssi": -80, "noise": -89, "beacon": 100}, {"macaddr": "00:18:F8:F9:6C:4D", "essid": "willow", "channel": 6, "rssi": -81, "noise": -86, "beacon": 100}, {"macaddr": "00:18:F8:F9:6C:44", "essid": "willow", "channel": 6, "rssi": -79, "noise": -85, "beacon": 100}]}
 
