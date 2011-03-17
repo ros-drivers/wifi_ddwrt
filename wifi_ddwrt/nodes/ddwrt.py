@@ -220,7 +220,7 @@ def loop():
       if node: pub2.publish(node)
       last_ex = ''
     except Exception as e:
-      if e != last_e:
+      if e != last_ex:
           rospy.logwarn("Caught exception %s" % e)
       last_ex = e
     r.sleep()
