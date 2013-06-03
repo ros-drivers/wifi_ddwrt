@@ -33,9 +33,6 @@
 #
 # Revision $Id: gossipbot.py 1013 2008-05-21 01:08:56Z sfkwc $
 
-## chat is a simple IM-like test node. It demonstrates publishing and
-## subscribing to the same topic.
-
 PKG = 'wifi_ddwrt'
 import roslib; roslib.load_manifest(PKG) 
 
@@ -126,18 +123,12 @@ def usage(progname):
 
 def main(argv, stdout, environ):
   progname = argv[0]
-  optlist, args = getopt.getopt(argv[1:], "", ["help", "test", "debug"])
-
-  testflag = 0
+  optlist, args = getopt.getopt(argv[1:], "", ["help",])
 
   for (field, val) in optlist:
     if field == "--help":
       usage(progname)
       return
-    elif field == "--debug":
-      debugfull()
-    elif field == "--test":
-      testflag = 1
 
   loop()
 
