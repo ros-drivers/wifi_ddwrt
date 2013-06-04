@@ -43,9 +43,6 @@ NUM_BARS = 5
 MAX_PERCENT = 0.9
 DISPLAY_HEIGHT = 1.6
 
-PKG = 'wifi_ddwrt'
-import roslib; roslib.load_manifest(PKG)
-
 import rospy
 from wifi_ddwrt.msg import *
 from pr2_msgs import AccessPoint

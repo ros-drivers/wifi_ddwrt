@@ -36,8 +36,6 @@
 #***********************************************************
 MIN_RSSI = 10
 MAX_RSSI = 100
-PKG = 'wifi_ddwrt'
-import roslib; roslib.load_manifest(PKG)
 
 import rospy
 from wifi_ddwrt.msg import *

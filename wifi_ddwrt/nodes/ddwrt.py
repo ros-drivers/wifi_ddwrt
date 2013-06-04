@@ -33,9 +33,6 @@
 #
 # Revision $Id: gossipbot.py 1013 2008-05-21 01:08:56Z sfkwc $
 
-PKG = 'wifi_ddwrt'
-import roslib; roslib.load_manifest(PKG) 
-
 import os, sys, string, time, getopt, re
 import StringIO
 
