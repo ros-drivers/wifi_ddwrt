@@ -1,0 +1,30 @@
+<package>
+  <name>wifi_ddwrt</name>
+  <version>0.2.0</version>
+  <description>Access to the DD-WRT wifi</description>
+  <maintainer email="ahendrix@willowgarage.com">Austin Hendrix</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://ros.org/wiki/wifi_ddwrt</url>
+
+  <author email="hassan@willowgarage.com">Scott Hassan</author>
+  <author email="eitan@willowgarage.com">Eitan Marder-Eppstein</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>std_msgs</build_depend>
+
+  <run_depend>message_runtime</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>tf</run_depend>
+
+  <run_depend>std_msgs</run_depend>>
+  <run_depend>pr2_msgs</run_depend>
+  <run_depend>nav_msgs</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>visualization_msgs</run_depend>
+
+  <run_depend>python-mechanize</run_depend>
+
+</package>
