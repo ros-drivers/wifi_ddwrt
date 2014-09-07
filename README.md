@@ -5,7 +5,7 @@ The main documentation for the wifi_ddwrt package is the [wifi_ddwrt](http://wik
 
 For Hydro and newer versions of ROS, use the hydro-devel branch:
 
-   git clone -b hydro-devel https://github.com/ros-drivers/wifi_ddwrt.git
+    git clone -b hydro-devel https://github.com/ros-drivers/wifi_ddwrt.git
 
 For Groovy and older version of ROS, use the master branch:
 
