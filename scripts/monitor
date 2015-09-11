@@ -45,7 +45,7 @@ DISPLAY_HEIGHT = 1.6
 
 import rospy
 from wifi_ddwrt.msg import *
-from pr2_msgs import AccessPoint
+from pr2_msgs.msg import AccessPoint
 
 import math
 import tf
@@ -72,8 +72,8 @@ class WifiMonitor:
     self.vis_pub = rospy.Publisher('visualization_marker', Marker)
 
   def ap_cb(self, ap):
-    if not self.aps.has_key(str(ap.macattr)):
-      self.aps[str(ap.macattr)] = ("ap" + str(len(self.aps) + 1), (20, 30, 0))
+    if not self.aps.has_key(str(ap.macaddr)):
+      self.aps[str(ap.macaddr)] = ("ap" + str(len(self.aps) + 1), (20, 30, 0))
 
     signal_quality = (MAX_RSSI - -1.0 * ap.signal) / (MAX_RSSI - MIN_RSSI)
     radius = SIGNAL_BAR_RADIUS
@@ -119,9 +119,9 @@ class WifiMonitor:
       marker.scale.y = radius
       marker.scale.z = z_scale
       marker.color.a = 1.0
-      marker.color.r = aps[str(ap.macattr)][1][0]
-      marker.color.g = aps[str(ap.macattr)][1][1]
-      marker.color.b = aps[str(ap.macattr)][1][2]
+      marker.color.r = aps[str(ap.macaddr)][1][0]
+      marker.color.g = aps[str(ap.macaddr)][1][1]
+      marker.color.b = aps[str(ap.macaddr)][1][2]
       self.vis_pub.publish(marker)
 
       x += step_size
