@@ -15,10 +15,15 @@ generate_messages(DEPENDENCIES std_msgs)
 catkin_package(CATKIN_DEPENDS std_msgs)
 
 install(PROGRAMS 
-   nodes/ddwrt.py
-   scripts/analysis
-   scripts/ddwrt_sim.py
-   scripts/monitor
-   scripts/ddwrt_config.py
-   scripts/wanip.py
-   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+          nodes/ddwrt.py
+          scripts/analysis
+          scripts/ddwrt_sim.py
+          scripts/monitor
+          scripts/ddwrt_config.py
+          scripts/wanip.py
+        FILES
+          launch/wifi_ddwrt.launch
+        DESTINATION 
+          ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+
