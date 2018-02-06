@@ -47,6 +47,7 @@ from wifi_ddwrt.msg import *
 from mechanize import Browser
 from std_msgs.msg import Header
 
+
 import diagnostic_updater
 import diagnostic_msgs
 
@@ -148,6 +149,9 @@ class WifiAP:
     :return:
     """
     parts = []
+    legend = ['bytes', 'packets', 'errs', 'drop', 'fifo', 'frame', 'compressed',
+              'multicast', 'bytes', 'packets', 'errs', 'drop', 'fifo',
+              'colls', 'carrier', 'compressed']
     try:
       url = 'http://{0}/fetchif.cgi?{1}'.format(self.hostname, interface)
       response = self.newBrowser().open(url)
@@ -156,7 +160,7 @@ class WifiAP:
       if len(lines) > 1:
         line = lines[1].strip()
         iparts = line.split(':', 1)
-        parts = iparts[1].split()
+        parts = dict(zip(legend, iparts[1].split()[:len(legend)]))
     except Exception as ex:
       last_ex = 'Error fetching data from the interface {0} with the error {1}'.format(interface, ex)
       rospy.logwarn(last_ex)
@@ -203,7 +207,7 @@ class WifiAP:
           clients = zip(*[iter(l_devices)] * 8)
         else:
           raise Exception("Unable to unpack AP clients. Router maybe incompatible, please tell the maintainer.")
-          
+        
         # clean all the information about the interfaces
         self.interfaces = {}
         # grab all the client interfaces an their status
@@ -313,7 +317,6 @@ def loop():
   site_survey_update = rospy.get_param('~site_survey_update', 120)
   site_survey_topic = rospy.get_param('~site_survey_topic', 'ddwrt/sitesurvey')
   hw_id = rospy.get_param('~hd_id', 'RouterXPTO')
-  
   
   pub1 = rospy.Publisher(site_survey_topic, SiteSurvey, queue_size=1)
   
