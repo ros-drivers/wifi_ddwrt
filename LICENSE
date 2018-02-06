@@ -1,6 +1,6 @@
-Software License Agreement (BSD License)
+Software License Agreement
 
-Copyright (c) 2008, Willow Garage, Inc.
+Original work Copyright (c) 2008, Willow Garage, Inc. (BSD License)
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -29,4 +29,30 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
 LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
+
+
+Modified work Copyright 2018 Introsys S.A.
+Software License Agreement:
+
+The software supplied herewith by Introsys - Integration for Robotic
+Systems (the "Company") for its AGV Mobile Robot is intended
+and supplied to you, the Company's customer, for use solely and
+exclusively on or with the AGV Mobile Robot. The software is owned
+by the  Company and/or its supplier, and is protected under
+applicable  copyright laws. All rights are reserved.
+Any use in violation of the foregoing restrictions may subject the
+user to criminal sanctions under applicable laws, as well as to
+civil liability for the breach of the terms and conditions of this
+license.
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THIS SOFTWARE IS PROVIDED IN AN "AS IS" CONDITION. NO WARRANTIES,
+WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
+TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. THE COMPANY SHALL NOT,
+IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL OR
+CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+
 
