@@ -311,9 +311,11 @@ def loop():
   diag_rate = rospy.get_param('~diag_rate', 1)
   diag_agg_topic = rospy.get_param('~diag_agg_topic', 'wifi_ap')
   site_survey_update = rospy.get_param('~site_survey_update', 120)
+  site_survey_topic = rospy.get_param('~site_survey_topic', 'ddwrt/sitesurvey')
   hw_id = rospy.get_param('~hd_id', 'RouterXPTO')
   
-  pub1 = rospy.Publisher("ddwrt/sitesurvey", SiteSurvey, queue_size=1)
+  
+  pub1 = rospy.Publisher(site_survey_topic, SiteSurvey, queue_size=1)
   
   ap = WifiAP(router_ip, username, password)
   

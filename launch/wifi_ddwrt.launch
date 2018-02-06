@@ -2,8 +2,6 @@
 
 <launch>
    <node name="wifi_ddwrt" pkg="wifi_ddwrt" type="ddwrt.py" output="screen" >
-     <param name="hostname"      value="192.168.1.1"/>
-     <param name="username"      value="admin"/>
-     <param name="password"      value="admin"/>
+     <rosparam command="load" file="$(find wifi_ddwrt)/config/config.yaml" />   
    </node>
 </launch>
