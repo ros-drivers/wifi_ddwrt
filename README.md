@@ -32,7 +32,7 @@ related to the Publishers under Indigo
     roslaunch wifi_ddwrt wifi_ddwrt.launch
 
 
-## Output (diagnostic aggregator)
+### Output (diagnostic aggregator)
 
 ```
 Full Name: /Other/wifi_ddwrt: wifi_ap
