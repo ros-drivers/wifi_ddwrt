@@ -192,10 +192,18 @@ class WifiAP:
       
       self.interfaces = {}
       if active_wireless:
-        active_wireless = active_wireless.replace("'", '')  # we want to remove the apostrophe
+        active_wireless = active_wireless.replace("'", "")  # we want to remove the apostrophe
         l_devices = active_wireless.split(',')
-        clients = zip(*[iter(l_devices)] * 10)
         
+        if (len(l_devices) % 10) == 0:
+          clients = zip(*[iter(l_devices)] * 10)
+        elif (len(l_devices) % 9) == 0:
+          clients = zip(*[iter(l_devices)] * 9)
+        elif (len(l_devices) % 8) == 0:
+          clients = zip(*[iter(l_devices)] * 8)
+        else:
+          raise Exception("Unable to unpack AP clients. Router maybe incompatible, please tell the maintainer.")
+          
         # clean all the information about the interfaces
         self.interfaces = {}
         # grab all the client interfaces an their status
@@ -206,6 +214,7 @@ class WifiAP:
           noise = 9999
           snr = 9999
           quality = 9999
+          
           try:
             # netgear R7800
             if len(client) == 10:
@@ -213,21 +222,26 @@ class WifiAP:
               noise = int(client[7])
               snr = int(client[8])
               quality = int(client[9]) / 10
+            
             # old devices (Not sure if this is really needed but maintained for compatibility)
             elif len(client) == 7:
               signal = int(client[4])
               noise = int(client[5])
               snr = int(client[6])
               quality = signal * 1.24 + 116
-            else:
+            
+            elif len(client) == 9:
               signal = int(client[5])
               noise = int(client[6])
               snr = int(client[7])
               quality = int(client[8]) / 10
+            
+            else:
+              raise Exception("Unable to unpack AP clients. Router maybe incompatible, please tell the maintainer.")
+          
           except Exception as ex:
-            last_ex = 'Unable to read data from interface {0} with error: {1}'.format(interface, ex)
+            raise Exception('Unable to read data from interface {0} with error: {1}'.format(interface, ex))
             rospy.logwarn(last_ex)
-            self.ap_ok = False
           
           nt_devices = self.fetchBandwidthStats(interface)
           self.interfaces.setdefault(interface, []).append({'macaddr': macaddr,
@@ -236,8 +250,9 @@ class WifiAP:
                                                             'snr': snr,
                                                             'quality': quality,
                                                             'nt_devices': nt_devices})
-          self.last_ex = ''
-          self.ap_ok = True
+        self.last_ex = ''
+        self.ap_ok = True
+    
     except Exception as ex:
       last_ex = 'Unable to access the AP at {0}. Error: {1}'.format(self.hostname, ex)
       rospy.logwarn(last_ex)
@@ -273,16 +288,6 @@ class WifiAP:
       stat.summary(diagnostic_msgs.msg.DiagnosticStatus.ERROR, error)
     finally:
       return stat
-  
-  # ------------------------------------------------------------------------------------------------------------------ #
-  
-  def check_signal(self, stat):
-    pass
-  
-  # ------------------------------------------------------------------------------------------------------------------ #
-  
-  def check_throughput(self, stat):
-    pass
   
   # ------------------------------------------------------------------------------------------------------------------ #
 
