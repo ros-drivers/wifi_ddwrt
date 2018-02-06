@@ -69,7 +69,7 @@ class WifiMonitor:
   def __init__(self):
     self.aps = aps
     rospy.Subscriber('ddwrt/accesspoint', AccessPoint, self.ap_cb)
-    self.vis_pub = rospy.Publisher('visualization_marker', Marker)
+    self.vis_pub = rospy.Publisher('visualization_marker', Marker, queue_size=1)
 
   def ap_cb(self, ap):
     if not self.aps.has_key(str(ap.macaddr)):
