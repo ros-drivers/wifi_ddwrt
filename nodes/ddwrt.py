@@ -70,6 +70,7 @@ import rospy
 from wifi_ddwrt.msg import *
 from mechanize import Browser
 from std_msgs.msg import Header
+from pr2_msgs.msg import AccessPoint
 
 import diagnostic_updater
 import diagnostic_msgs
@@ -103,6 +104,9 @@ class WifiAP:
     # List of interfaces with the following structure
     # client = {'macaddr': None, 'signal': None, 'noise': None, 'snr': None, 'quality': None, 'nt_devices': []}
     self.interfaces = {}
+    
+    self.accesspoint_point = rospy.get_param('~accesspoint_topic', 'ddwrt/accesspoint')
+    self.pub2 = rospy.Publisher(self.accesspoint_point, AccessPoint, queue_size=1)
   
   # ----------------------------------------------------------------------------------------------------------------- #
   
@@ -279,6 +283,24 @@ class WifiAP:
                                                             'nt_devices': nt_devices})
         self.last_ex = ''
         self.ap_ok = True
+        
+        # make sure that we put a stamp on things
+        # Needs more tests, this is not used it's only for compatibility
+        # This is published for all the clients connected to the AP
+        # and not only the first one (not sure if best strategy)
+        header = Header()
+        header.stamp = rospy.Time.now()
+        ap_info = AccessPoint(header=header,
+                              essid=self.essid,
+                              macaddr=macaddr,
+                              signal=signal,
+                              noise=noise,
+                              snr=snr,
+                              channel=self.channel,
+                              rate=self.rate,
+                              quality=quality,
+                              tx_power=self.tx_power)
+        self.pub2.publish(ap_info)
     
     except Exception as ex:
       last_ex = 'Unable to access the AP at {0}. Error: {1}'.format(self.hostname, ex)
