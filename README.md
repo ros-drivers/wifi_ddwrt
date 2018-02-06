@@ -46,4 +46,5 @@ channel: 5
 rate: 288.9 Mb/s
 tx_power: 20 dBm
 ath1: [{'macaddr': 'AA:AA:AA:AA:AA:AA', 'signal': -76, 'nt_devices': {'bytes': '98906417', 'frame': '0', 'drop': '0', 'packets': '228663', 'fifo': '0', 'multicast': '0', 'colls': '0', 'compressed': '0', 'carrier': '0', 'errs': '0'}, 'noise': -98, 'snr': 22, 'quality': 48}, {'macaddr': 'BB:BB:BB:BB:BB:BB', 'signal': -78, 'nt_devices': {'bytes': '98908498', 'frame': '0', 'drop': '0', 'packets': '228675', 'fifo': '0', 'multicast': '0', 'colls': '0', 'compressed': '0', 'carrier': '0', 'errs': '0'}, 'noise': -98, 'snr': 20, 'quality': 44}]
+ath2: [{'macaddr': 'AA:AA:AA:AA:AA:AA', 'signal': -76, 'nt_devices': {'bytes': '98906697', 'frame': '0', 'drop': '0', 'packets': '228663', 'fifo': '0', 'multicast': '0', 'colls': '0', 'compressed': '0', 'carrier': '0', 'errs': '0'}, 'noise': -96, 'snr': 23, 'quality': 48}, {'macaddr': 'BB:BB:BB:BB:BB:BB', 'signal': -78, 'nt_devices': {'bytes': '98908498', 'frame': '0', 'drop': '0', 'packets': '223075', 'fifo': '0', 'multicast': '0', 'colls': '0', 'compressed': '0', 'carrier': '0', 'errs': '0'}, 'noise': -96, 'snr': 20, 'quality': 43}]
 ```
