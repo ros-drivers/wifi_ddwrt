@@ -35,16 +35,15 @@
 # Modified work Copyright 2018 Introsys S.A.
 # Software License Agreement:
 #
-# The software supplied herewith by Introsys - Integration for Robotic
-# Systems (the "Company") for its AGV Mobile Robot is intended
-# and supplied to you, the Company's customer, for use solely and
-# exclusively on or with the AGV Mobile Robot. The software is owned
-# by the  Company and/or its supplier, and is protected under
-# applicable  copyright laws. All rights are reserved.
-# Any use in violation of the foregoing restrictions may subject the
-# user to criminal sanctions under applicable laws, as well as to
-# civil liability for the breach of the terms and conditions of this
-# license.
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
