@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+
+<launch>
+   <node name="wifi_ddwrt" pkg="wifi_ddwrt" type="ddwrt.py" output="screen" >
+     <rosparam command="load" file="$(find wifi_ddwrt)/config/config.yaml" />   
+   </node>
+</launch>

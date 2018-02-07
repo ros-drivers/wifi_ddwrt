@@ -1,0 +1,10 @@
+# Configuration variables
+hostname: '192.168.1.1'
+username: 'admin'
+password: 'admin'
+node_rate: 0.5
+diag_rate: 1.0
+diag_agg_topic: 'wifi_ap'
+site_survey_update: 120
+site_survey_topic: 'ddwrt/sitesurvey'
+hd_id: 'RouterXPTO'

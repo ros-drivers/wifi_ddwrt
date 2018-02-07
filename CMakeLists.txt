@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(wifi_ddwrt)
 
-find_package(catkin REQUIRED COMPONENTS message_generation std_msgs)
+find_package(catkin REQUIRED COMPONENTS message_generation std_msgs diagnostic_updater diagnostic_msgs pr2_msgs)
 
 add_message_files(
   FILES
@@ -15,10 +15,15 @@ generate_messages(DEPENDENCIES std_msgs)
 catkin_package(CATKIN_DEPENDS std_msgs)
 
 install(PROGRAMS 
-   nodes/ddwrt.py
-   scripts/analysis
-   scripts/ddwrt_sim.py
-   scripts/monitor
-   scripts/ddwrt_config.py
-   scripts/wanip.py
-   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+          nodes/ddwrt.py
+          scripts/analysis
+          scripts/ddwrt_sim.py
+          scripts/monitor
+          scripts/ddwrt_config.py
+          scripts/wanip.py
+        FILES
+          launch/wifi_ddwrt.launch
+        DESTINATION 
+          ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+
