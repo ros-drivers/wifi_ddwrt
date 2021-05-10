@@ -1,6 +1,6 @@
 <package>
   <name>wifi_ddwrt</name>
-  <version>0.2.0</version>
+  <version>0.2.1</version>
   <description>Access to the DD-WRT wifi</description>
   <maintainer email="ahendrix@willowgarage.com">Austin Hendrix</maintainer>
 
