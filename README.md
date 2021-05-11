@@ -1,4 +1,4 @@
-wifi_ddwrt
+wifi_ddwrt[![Build Status](https://travis-ci.com/ros-drivers/wifi_ddwrt?branch=hydro-devel)](https://travis-ci.com/ros-drivers/wifi_ddwrt)
 ==========
 
 The main documentation for the wifi_ddwrt package is the [wifi_ddwrt](http://wiki.ros.org/wifi_ddwrt) page on the ROS wiki.
