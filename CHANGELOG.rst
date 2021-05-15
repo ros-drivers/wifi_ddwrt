@@ -22,8 +22,8 @@ Changelog for package wifi_ddwrt
 * Create README. Fixes `#1 <https://github.com/ros-drivers/wifi_ddwrt/issues/1>`_
 * Contributors: Austin Hendrix, Dave Feil-Seifer, Yuki Furuta
 
-Forthcoming
------------
+0.2.2 (2021-05-15)
+------------------
 * 0.2.1
 * update changelogs
 * Merge pull request `#15 <https://github.com/ros-drivers/wifi_ddwrt/issues/15>`_ from k-okada/add_travis
