@@ -119,7 +119,7 @@ class WifiAP:
       line = lines[1].strip()
       iparts = line.split(":", 1)
       parts = iparts[1].split()
-      print interface, parts
+      print (interface, parts)
       
 
   def fetchCurrentAP(self):
@@ -228,13 +228,13 @@ def test():
   while 1:
     if 0:
       survey = ap.fetchSiteSurvey()
-      print survey
+      print (survey)
     if 1:
       node = ap.fetchCurrentAP()
-      print node
+      print (node)
 
 def usage(progname):
-  print __doc__ % vars()
+  print (__doc__ % vars())
 
 def main(argv, stdout, environ):
   progname = argv[0]
