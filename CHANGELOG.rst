@@ -2,8 +2,8 @@
 Changelog for package wifi_ddwrt
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.1 (2021-05-15)
+------------------
 * Merge pull request `#15 <https://github.com/ros-drivers/wifi_ddwrt/issues/15>`_ from k-okada/add_travis
   add travsi CI
 * update CHANGELOG.rst
