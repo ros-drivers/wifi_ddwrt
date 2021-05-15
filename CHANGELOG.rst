@@ -4,6 +4,19 @@ Changelog for package wifi_ddwrt
 
 Forthcoming
 -----------
+* Merge pull request `#15 <https://github.com/ros-drivers/wifi_ddwrt/issues/15>`_ from k-okada/add_travis
+  add travsi CI
+* update CHANGELOG.rst
+* Merge pull request `#14 <https://github.com/ros-drivers/wifi_ddwrt/issues/14>`_ from PR2-prime/noetic-devel
+* add travsi CI
+* updated for focal/noetic/python3 compatibility
+* Merge pull request `#7 <https://github.com/ros-drivers/wifi_ddwrt/issues/7>`_ from furushchev/fix-typo
+  [wifi_ddwrt] fix typo
+* [wifi_ddwrt] fix typo
+* Update README.md
+* Create README. Fixes `#1 <https://github.com/ros-drivers/wifi_ddwrt/issues/1>`_
+* Contributors: Austin, Dave Feil-Seifer, Kei Okada, Yuki Furuta
+
 * updated for focal/noetic/python3 compatibility (`#14 <https://github.com/ros-drivers/wifi_ddwrt/issues/14>`_)
 * [wifi_ddwrt] fix typo (`#7 <https://github.com/ros-drivers/wifi_ddwrt/issues/7>`_)
 * Create README. Fixes `#1 <https://github.com/ros-drivers/wifi_ddwrt/issues/1>`_
