@@ -99,7 +99,7 @@ class WifiAP:
     for row in reader:
       essid = row[0]
       macattr = row[2]
-      channel = int(row[3])
+      channel = int(row[3].split(' ')[0])
       rssi = int(row[4])
       noise = int(row[5])
       beacon = int(row[6])
