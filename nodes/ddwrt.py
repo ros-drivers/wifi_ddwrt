@@ -34,7 +34,7 @@
 # Revision $Id: gossipbot.py 1013 2008-05-21 01:08:56Z sfkwc $
 
 import os, sys, string, time, getopt, re
-import StringIO
+from io import StringIO
 
 import rospy
 from wifi_ddwrt.msg import *
@@ -72,7 +72,7 @@ class WifiAP:
 
     response = self.newBrowser().open(url)
 
-    body = response.read()
+    body = response.read().decode()
     
     #make sure that we put a stamp on things
     header = Header()
@@ -94,7 +94,7 @@ class WifiAP:
 
       aplines.append(line)
 
-    fp = StringIO.StringIO(string.join(aplines, '\n'))
+    fp = StringIO('\n'.join(aplines))
     reader = csv.reader(fp)
     for row in reader:
       essid = row[0]
@@ -125,7 +125,7 @@ class WifiAP:
   def fetchCurrentAP(self):
     url = "http://%s/Status_Wireless.live.asp" % self.hostname
     response = self.newBrowser().open(url)
-    body = response.read()
+    body = response.read().decode()
 
     line = None
     lines = body.split("\n")
@@ -166,7 +166,7 @@ class WifiAP:
         signal = int(parts[5])
         noise = int(parts[6])
         snr = int(parts[7])
-        quality = int(parts[8])/10
+        quality = int(int(parts[8])/10)
       
       #self.fetchBandwidthStats(interface)
 
@@ -197,8 +197,8 @@ def loop():
 
   ap = WifiAP(router_ip, username, password)
 
-  pub1 = rospy.Publisher("ddwrt/sitesurvey", SiteSurvey)
-  pub2 = rospy.Publisher("ddwrt/accesspoint", AccessPoint)
+  pub1 = rospy.Publisher("ddwrt/sitesurvey", SiteSurvey, queue_size= 10)
+  pub2 = rospy.Publisher("ddwrt/accesspoint", AccessPoint, queue_size= 10)
 
   r = rospy.Rate(.5)
   lastTime = 0
