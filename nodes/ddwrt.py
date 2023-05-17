@@ -169,21 +169,29 @@ class WifiAP:
         quality = int(int(parts[8])/10)
       
       #self.fetchBandwidthStats(interface)
+    else:
+      macaddr = ""
+      interface = ""
+      signal = 0
+      noise = 0
+      snr = 0
+      quality = 0
 
-      #make sure that we put a stamp on things
-      header = Header()
-      header.stamp = rospy.Time.now()
 
-      ap = AccessPoint(header=header,
-                       essid=essid,
-                       macaddr=macaddr,
-                       signal=signal,
-                       noise=noise,
-                       snr=snr,
-                       channel=channel,
-                       rate=rate,
-                       quality=quality,
-                       tx_power=tx_power)
+    #make sure that we put a stamp on things
+    header = Header()
+    header.stamp = rospy.Time.now()
+
+    ap = AccessPoint(header=header,
+                     essid=essid,
+                     macaddr=macaddr,
+                     signal=signal,
+                     noise=noise,
+                     snr=snr,
+                     channel=channel,
+                     rate=rate,
+                     quality=quality,
+                     tx_power=tx_power)
 
     return ap
 
@@ -211,7 +219,9 @@ def loop():
         pub1.publish(survey)
         lastTime = time.time()
       node = ap.fetchCurrentAP()
-      if node: pub2.publish(node)
+      if not node:
+        node = AccessPoint()
+      pub2.publish(node)
       last_ex = ''
     except Exception as e:
       if e != last_ex:
