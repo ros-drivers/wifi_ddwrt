@@ -230,6 +230,7 @@ def loop():
     r.sleep()
         
 def test():
+  rospy.init_node("wifi_ddwrt")
   router_ip = rospy.get_param('~router_ip', 'wifi-router')
   username = rospy.get_param('~username', 'root')
   password = rospy.get_param('~password', '')
